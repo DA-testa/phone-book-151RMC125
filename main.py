@@ -16,17 +16,26 @@ def write_responses(result):
 
 def process_queries(queries):
     result = []
+    # Changed from list to dictionary
     phonebook = {}
     for request in queries:
         if request.type == 'add':
+            # Adds phone number (as key) with names (as values) to the phonebook
+            # If the phone number exists, just rewrites the name
             phonebook[request.number] = request.name
         elif request.type == 'del':
+            # Looks up the phonebook for specific number
             if request.number in phonebook:
+                # If found, deletes key-value pair
                 del phonebook[request.number]
         elif request.type == 'find':
+            # Searches for specific number in phonebook
+            # If no such number found, gives default answer "not found"
             response = phonebook.get(request.number, "not found")
+            # Adds response to the result list
             result.append(response)
         else:
+            # If entered anything else, outputs message about wrong command
             response = "invalid input"
             result.append(response)
     return result
