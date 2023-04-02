@@ -9,7 +9,12 @@ class Query:
 
 def read_queries():
     n = int(input())
-    return [Query(input().split()) for i in range(n)]
+    # Added constraint to the input
+    assert 1 <= n <= 10**5, "Number of queries is out of bounds"
+    # Added limit to splits, 
+    # so that if entered name is more than just one word (bob ross) 
+    # it prints out full name (bob ross) instead of just first entry (bob)
+    return [Query(input().split(' ', 2)) for i in range(n)]
 
 def write_responses(result):
     print('\n'.join(result))
