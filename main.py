@@ -9,39 +9,41 @@ class Query:
 
 def read_queries():
     n = int(input())
-    return [Query(input().split()) for i in range(n)]
+    # Added constraint to the input
+    assert 1 <= n <= 10**5, "Number of queries is out of bounds"
+    # Added limit to splits, 
+    # so that if entered name is more than just one word (bob ross) 
+    # it prints out full name (bob ross) instead of just first entry (bob)
+    return [Query(input().split(' ', 2)) for i in range(n)]
 
 def write_responses(result):
     print('\n'.join(result))
 
 def process_queries(queries):
     result = []
-    # Keep list of all existing (i.e. not deleted yet) contacts.
-    contacts = []
-    for cur_query in queries:
-        if cur_query.type == 'add':
-            # if we already have contact with such number,
-            # we should rewrite contact's name
-            for contact in contacts:
-                if contact.number == cur_query.number:
-                    contact.name = cur_query.name
-                    break
-            else: # otherwise, just add it
-                contacts.append(cur_query)
-        elif cur_query.type == 'del':
-            for j in range(len(contacts)):
-                if contacts[j].number == cur_query.number:
-                    contacts.pop(j)
-                    break
+    # Changed from list to dictionary
+    phonebook = {}
+    for request in queries:
+        if request.type == 'add':
+            # Adds phone number (as key) with names (as values) to the phonebook
+            # If the phone number exists, just rewrites the name
+            phonebook[request.number] = request.name
+        elif request.type == 'del':
+            # Looks up the phonebook for specific number
+            if request.number in phonebook:
+                # If found, deletes key-value pair
+                del phonebook[request.number]
+        elif request.type == 'find':
+            # Searches for specific number in phonebook
+            # If no such number found, gives default answer "not found"
+            response = phonebook.get(request.number, "not found")
+            # Adds response to the result list
+            result.append(response)
         else:
-            response = 'not found'
-            for contact in contacts:
-                if contact.number == cur_query.number:
-                    response = contact.name
-                    break
+            # If entered anything else, outputs message about wrong command
+            response = "invalid input"
             result.append(response)
     return result
 
 if __name__ == '__main__':
     write_responses(process_queries(read_queries()))
-
